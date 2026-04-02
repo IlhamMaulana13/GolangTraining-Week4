@@ -34,3 +34,8 @@ emailVerified, _ := token.Claims["email_verified"].(bool)
 if !emailVerified {
 return "", nil, errors.New("EMAIL_NOT_VERIFIED")
 }
+
+// 3. Ambil data dari claims Firebase token
+uid := token.UID
+email, _ := token.Claims["email"].(string)
+name, _ := token.Claims["name"].(string)

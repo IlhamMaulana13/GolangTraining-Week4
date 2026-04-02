@@ -40,14 +40,12 @@ c.JSON(http.StatusOK, gin.H{
 func (h *ProductHandler) GetByID(c *gin.Context) {
 id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 if err != nil {
-c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "ID
-tidak valid"})
+c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "IDtidak valid"})
 return
 }
 product, err := h.productService.GetByID(uint(id))
 if err != nil {
-c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Produk
-tidak ditemukan"})
+c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Produktidak ditemukan"})
 return
 }
 c.JSON(http.StatusOK, gin.H{"success": true, "data": product})
@@ -66,14 +64,39 @@ c.JSON(http.StatusInternalServerError, gin.H{"success": false,
 "message": "Gagal membuat produk"})
 return
 }
-c.JSON(http.StatusCreated, gin.H{"success": true, "message": "Produk
-berhasil dibuat", "data": product})
+c.JSON(http.StatusCreated, gin.H{"success": true, "message": "Produkberhasil dibuat", "data": product})
 }
 // Update - PUT /products/:id (hanya admin)
 func (h *ProductHandler) Update(c *gin.Context) {
 id, err := strconv.ParseUint(c.Param("id"), 10, 64)
 if err != nil {
-c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "ID
-tidak valid"})
+c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "IDtidak valid"})
 return
+}
+
+var req models.UpdateProductRequest
+if err := c.ShouldBindJSON(&req); err != nil {
+	c.JSON(http.StatusBadRequest, gin.H{"success": false, "message":
+err.Error()})
+return
+}
+product, err := h.productService.Update(uint(id), &req)
+if err != nil {
+c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Produktidak ditemukan"})
+return
+}
+c.JSON(http.StatusOK, gin.H{"success": true, "message": "Produkdiperbarui", "data": product})
+}
+// Delete - DELETE /products/:id (hanya admin)
+func (h *ProductHandler) Delete(c *gin.Context) {
+id, err := strconv.ParseUint(c.Param("id"), 10, 64)
+if err != nil {
+c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "IDtidak valid"})
+return
+}
+if err := h.productService.Delete(uint(id)); err != nil {
+c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Produktidak ditemukan"})
+return
+}
+c.JSON(http.StatusOK, gin.H{"success": true, "message": "Produk berhasildihapus"})
 }

@@ -28,3 +28,9 @@ firebaseToken)
 if err != nil {
 return "", nil, errors.New("firebase token tidak valid ataukadaluarsa")
 }
+
+// 2. Cek apakah email sudah diverifikasi
+emailVerified, _ := token.Claims["email_verified"].(bool)
+if !emailVerified {
+return "", nil, errors.New("EMAIL_NOT_VERIFIED")
+}

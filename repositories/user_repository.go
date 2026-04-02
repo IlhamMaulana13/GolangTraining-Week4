@@ -24,3 +24,8 @@ var user models.User
 result := config.DB.Where("email = ?", email).First(&user)
 return &user, result.Error
 }
+
+// Create menyimpan user baru ke database
+func (r *UserRepository) Create(user *models.User) error {
+return config.DB.Create(user).Error
+}

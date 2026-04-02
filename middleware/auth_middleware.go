@@ -62,3 +62,22 @@ c.Set("user_id", claims["sub"])
 c.Set("email", claims["email"])
 c.Set("role", claims["role"])
 c.Set("firebase_uid", claims["firebase_uid"])
+// 5. Lanjutkan ke handler berikutnya
+c.Next()
+}
+}
+// AdminOnly middleware — hanya role "admin" yang boleh akses
+func AdminOnly() gin.HandlerFunc {
+return func(c *gin.Context) {
+role, _ := c.Get("role")
+if role != "admin" {
+c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+"success": false,
+"message": "Akses ditolak. Hanya admin yang diizinkan.",
+"error_code": "FORBIDDEN",
+})
+return
+}
+c.Next()
+}
+}

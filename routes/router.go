@@ -1,9 +1,9 @@
 package routes
 
 import (
+	"github.com/IlhamMaulana13/GolangTraining-Week4/handlers"
+	"github.com/IlhamMaulana13/GolangTraining-Week4/middleware"
 	"github.com/gin-gonic/gin"
-	"github.com/ilhammaulana13/GolangTraining-Week4/handlers"
-	"github.com/ilhammaulana13/GolangTraining-Week4/middleware"
 )
 
 func SetupRouter() *gin.Engine {

@@ -38,3 +38,27 @@ token, err := jwt.Parse(tokenString, func(token *jwt.Token)
 if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 return nil, jwt.ErrSignatureInvalid
 }
+return []byte(os.Getenv("JWT_SECRET")), nil
+})
+if err != nil || !token.Valid {
+c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+"success": false,
+"message": "Token tidak valid atau kadaluarsa",
+"error_code": "INVALID_TOKEN",
+})
+return
+}
+// 4. Simpan claims ke context Gin agar bisa diakses handler
+claims, ok := token.Claims.(jwt.MapClaims)
+if !ok {
+c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+"success": false,
+"message": "Token claims tidak valid",
+})
+return
+}
+// Set ke context — bisa diakses di handler: c.Get("user_id")
+c.Set("user_id", claims["sub"])
+c.Set("email", claims["email"])
+c.Set("role", claims["role"])
+c.Set("firebase_uid", claims["firebase_uid"])

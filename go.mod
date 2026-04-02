@@ -6,6 +6,7 @@ require (
 	firebase.google.com/go/v4 v4.19.0
 	github.com/gin-gonic/gin v1.12.0
 	github.com/golang-jwt/jwt/v5 v5.3.1
+	github.com/joho/godotenv v1.5.1
 	google.golang.org/api v0.231.0
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.31.1

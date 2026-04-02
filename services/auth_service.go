@@ -65,3 +65,33 @@ user.LastLoginAt = &now
 user.EmailVerified = true
 s.userRepo.Update(user)
 }
+
+// 5. Generate Backend JWT Token
+jwtToken, err := s.generateJWT(user)
+if err != nil {
+return "", nil, errors.New("gagal membuat token")
+}
+return jwtToken, user, nil
+}
+// generateJWT membuat JWT token dengan payload user
+func (s *AuthService) generateJWT(user *models.User) (string, error) {
+expireHours, _ := strconv.Atoi(os.Getenv("JWT_EXPIRE_HOURS"))
+if expireHours == 0 {
+expireHours = 24
+}
+// Claims adalah payload yang disimpan dalam token
+claims := jwt.MapClaims{
+"sub": user.ID,
+"firebase_uid": user.FirebaseUID,
+"email": user.Email,
+"name": user.Name,
+"role": user.Role,
+"email_verified": user.EmailVerified,
+"iat": time.Now().Unix(),
+"exp": time.Now().Add(time.Hour *
+time.Duration(expireHours)).Unix(),
+}
+// Buat token dengan algoritma HS256 dan secret key
+token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+}
